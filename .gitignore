@@ -1,0 +1,34 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Data files (large)
+data/cifar-10-batches-py/
+data/*.tar.gz
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model outputs (optional - comment out if you want to keep them)
+# outputs/models/*.joblib
+
+# Logs
+*.log
