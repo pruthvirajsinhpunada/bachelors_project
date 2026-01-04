@@ -173,4 +173,5 @@ You can explore the complete analysis, theory, and live code in the interactive 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition.ipynb)
 
 - **Interactive Jupyter Notebook**: [Launch on Binder](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition.ipynb)
-- **Static Preview with Outputs**: [View on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb?flush_cache=true)
+- **Google Colab (Recommended)**: [Open in Colab](https://colab.research.google.com/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb) (Reliable dynamic rendering)
+- **Static Preview**: [View on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb?flush_cache=true) or download the [HTML Report](notebooks/SVM_Object_Recognition.html) for local viewing.
