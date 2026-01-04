@@ -10,9 +10,8 @@ venv/
 env/
 .env/
 
-# Data files (large)
-data/cifar-10-batches-py/
-data/*.tar.gz
+# Data files (large - will be downloaded automatically)
+data/
 
 # Jupyter checkpoints
 .ipynb_checkpoints/

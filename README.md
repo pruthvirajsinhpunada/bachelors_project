@@ -1,76 +1,72 @@
-# 🎯 SVM Object Recognition
+# SVM Satellite Image Classification
 
-## Bachelor's Thesis - Data Analytics Final Project
+## 🛰️ Land Cover Classification using Support Vector Machine
 
-A professional implementation of **Support Vector Machine (SVM)** for image classification and object recognition using the CIFAR-10 dataset.
-
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.0+-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+Bachelor's Thesis Project - Data Analytics
 
 ---
 
 ## 📋 Project Overview
 
-| Component | Description |
-|-----------|-------------|
-| **Algorithm** | Support Vector Machine (Supervised Learning) |
-| **Application** | Image Segmentation & Object Recognition |
-| **Dataset** | CIFAR-10 (60,000 images, 10 classes) |
-| **Features** | HOG (Histogram of Oriented Gradients) |
-| **Language** | Python |
+This project applies **Support Vector Machine (SVM)** for classifying satellite images into different land cover types using the **EuroSAT dataset**.
 
-### CIFAR-10 Classes
-| ID | Class |
-|----|-------|
-| 0 | ✈️ Airplane |
-| 1 | 🚗 Automobile |
-| 2 | 🐦 Bird |
-| 3 | 🐱 Cat |
-| 4 | 🦌 Deer |
-| 5 | 🐕 Dog |
-| 6 | 🐸 Frog |
-| 7 | 🐴 Horse |
-| 8 | 🚢 Ship |
-| 9 | 🚛 Truck |
+### Key Features
+- ✅ SVM classification with multiple kernels (Linear, RBF, Polynomial)
+- ✅ Hyperplane/decision boundary visualization
+- ✅ HOG (Histogram of Oriented Gradients) feature extraction
+- ✅ Comprehensive evaluation metrics and visualizations
+
+### Dataset: EuroSAT
+- **Source**: Zenodo (European Research Repository)
+- **URL**: https://zenodo.org/record/7711810
+- **Images**: 27,000 satellite images (64x64 pixels)
+- **Classes**: 10 land cover types
+
+| Class | Description |
+|-------|-------------|
+| AnnualCrop | Annual crop fields |
+| Forest | Forested areas |
+| HerbaceousVegetation | Herbaceous vegetation |
+| Highway | Roads and highways |
+| Industrial | Industrial areas |
+| Pasture | Pasture lands |
+| PermanentCrop | Permanent crop fields |
+| Residential | Residential areas |
+| River | Rivers and streams |
+| SeaLake | Seas and lakes |
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Installation
-
+### 1. Install Dependencies
 ```bash
-# Clone or navigate to project directory
-cd thesis
-
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### 2. Train the Model
-
 ```bash
-# Quick training with subset (recommended for first run)
-python main.py --train --evaluate --subset 10000
+# Standard training
+python3 main.py --train --evaluate --subset 2000
 
-# Full training (takes longer)
-python main.py --train --evaluate
-
-# With hyperparameter tuning
-python main.py --train --tune --evaluate --subset 5000
+# With kernel comparison (recommended)
+python3 main.py --train --evaluate --compare-kernels --subset 2000
 ```
 
-### 3. Make Predictions
+### 3. View Results
+Check `outputs/figures/` for all generated visualizations.
 
-```bash
-# Predict class for a new image
-python main.py --predict path/to/your/image.jpg
-```
+---
+
+## 📊 Project Results
+
+| Kernel | Accuracy | Training Time |
+|--------|----------|---------------|
+| **RBF** | ~54% | 1-2s |
+| Linear | ~45% | 1s |
+| Polynomial | ~35% | 1-2s |
+
+**Best Kernel**: RBF (Radial Basis Function)
 
 ---
 
@@ -78,21 +74,20 @@ python main.py --predict path/to/your/image.jpg
 
 ```
 thesis/
-├── data/                         # CIFAR-10 dataset (auto-downloaded)
+├── main.py                  # Main entry point
 ├── src/
-│   ├── __init__.py
-│   ├── data_loader.py            # Data loading & preprocessing
-│   ├── feature_extraction.py     # HOG feature extraction
-│   ├── svm_classifier.py         # SVM model implementation
-│   └── visualization.py          # Plotting functions
+│   ├── satellite_loader.py  # EuroSAT dataset loader
+│   ├── feature_extraction.py # HOG features
+│   ├── svm_classifier.py    # SVM model
+│   ├── visualization.py     # Plotting functions
+│   └── kernel_visualization.py # Kernel comparison
 ├── notebooks/
-│   └── SVM_Object_Recognition.ipynb  # Jupyter analysis notebook
+│   └── SVM_Object_Recognition.ipynb
 ├── outputs/
-│   ├── models/                   # Saved trained models
-│   └── figures/                  # Generated visualizations
-├── main.py                       # CLI entry point
-├── requirements.txt              # Dependencies
-└── README.md                     # This file
+│   ├── models/              # Saved models
+│   └── figures/             # Visualizations
+├── requirements.txt
+└── README.md
 ```
 
 ---
@@ -100,137 +95,59 @@ thesis/
 ## 🔬 Methodology
 
 ### 1. Feature Extraction: HOG
+Histogram of Oriented Gradients captures shape information:
+- Gradient magnitude: |G| = √(Gx² + Gy²)
+- Gradient direction: θ = arctan(Gy / Gx)
 
-**Histogram of Oriented Gradients (HOG)** captures edge orientations and local shape information:
-
-```
-Input Image (32×32) → Gradient Calculation → Cell Histograms → Block Normalization → Feature Vector
-```
-
-| Parameter | Value |
-|-----------|-------|
-| Orientations | 9 |
-| Pixels per Cell | 4×4 |
-| Cells per Block | 2×2 |
-| Features per Image | 1,764 |
-
-### 2. SVM Classification
-
-We use a **Radial Basis Function (RBF)** kernel for non-linear classification:
-
-- **One-vs-Rest (OvR)** strategy for multi-class
-- **Probability estimates** enabled for confidence scores
-- **GridSearchCV** for hyperparameter optimization
+### 2. Classification: SVM
+Support Vector Machine with kernel functions:
+- **Linear**: K(x,y) = x·y
+- **RBF**: K(x,y) = exp(-γ||x-y||²)
+- **Polynomial**: K(x,y) = (γx·y + r)^d
 
 ### 3. Evaluation Metrics
-
-- **Accuracy**: Overall correct predictions
-- **Precision**: Positive predictive value
-- **Recall**: True positive rate
-- **F1-Score**: Harmonic mean of precision and recall
-- **Confusion Matrix**: Per-class performance
-- **ROC Curves**: AUC for each class
-
----
-
-## 📊 Sample Results
-
-After training with default settings, you can expect:
-
-| Metric | Expected Range |
-|--------|----------------|
-| Accuracy | 55-65% |
-| Precision | 55-65% |
-| Recall | 55-65% |
-| F1-Score | 55-65% |
-
-> **Note**: Deep learning models achieve 90%+ on CIFAR-10, but SVM demonstrates classical ML fundamentals effectively.
+- Accuracy, Precision, Recall, F1-Score
+- Confusion Matrix
+- ROC Curves
 
 ---
 
 ## 📈 Generated Visualizations
 
-After running with `--evaluate`, the following plots are generated in `outputs/figures/`:
-
 | File | Description |
 |------|-------------|
-| `01_sample_images.png` | Sample images from dataset |
-| `02_class_distribution.png` | Class balance in training set |
-| `03_confusion_matrix.png` | Classification confusion matrix |
-| `04_roc_curves.png` | ROC curves for each class |
-| `05_prediction_samples.png` | Sample predictions (correct/incorrect) |
-| `06_metrics_comparison.png` | Accuracy, Precision, Recall, F1 comparison |
-| `07_per_class_accuracy.png` | Per-class accuracy breakdown |
-| `08_hog_visualization.png` | HOG feature visualization |
+| 00_satellite_samples.png | Sample satellite images |
+| 01_sample_images.png | Preprocessed samples |
+| 02_class_distribution.png | Class balance |
+| 03_confusion_matrix.png | Classification results |
+| 04_roc_curves.png | ROC curves |
+| 09_kernel_comparison.png | Kernel comparison |
+| 10_hyperplane_decision_boundaries.png | Hyperplane visualization |
+| 11_kernel_theory.png | SVM theory |
 
 ---
 
-## 🛠️ Command-Line Options
+## 🛠️ Technologies Used
 
-```bash
-python main.py [OPTIONS]
-
-Training:
-  --train               Train the SVM classifier
-  --tune                Enable hyperparameter tuning (GridSearchCV)
-  --evaluate            Evaluate on test set and generate visualizations
-
-Model Parameters:
-  --kernel {rbf,linear,poly}    SVM kernel type (default: rbf)
-  --C FLOAT                     Regularization parameter (default: 10.0)
-  --gamma {scale,auto,FLOAT}    Kernel coefficient (default: scale)
-
-Feature Extraction:
-  --use-pca             Apply PCA dimensionality reduction
-  --pca-components N    Number of PCA components (default: 100)
-
-Data:
-  --subset N            Use a subset of N samples (faster training)
-
-Prediction:
-  --predict IMAGE_PATH  Classify a single image
-```
+- **Python 3.9+**
+- **scikit-learn**: SVM, metrics
+- **scikit-image**: HOG features
+- **Matplotlib/Seaborn**: Visualizations
+- **NumPy/Pandas**: Data processing
+- **Jupyter Notebook**: Interactive analysis
 
 ---
 
-## 📚 Theoretical Background
+## 📚 References
 
-### Support Vector Machine (SVM)
-
-SVM finds the optimal hyperplane that separates classes with maximum margin:
-
-- **Linear SVM**: Works when data is linearly separable
-- **Kernel Trick**: Maps data to higher dimensions for non-linear boundaries
-- **RBF Kernel**: `K(x, y) = exp(-γ||x-y||²)` - creates circular decision boundaries
-
-### Why HOG + SVM?
-
-1. **HOG** captures edge and gradient structure (object shapes)
-2. **SVM** excels at finding optimal decision boundaries
-3. **Combination** is robust and interpretable (unlike black-box deep learning)
+1. EuroSAT Dataset: Helber et al., 2019
+2. HOG Features: Dalal & Triggs, 2005
+3. SVM: Cortes & Vapnik, 1995
 
 ---
 
-## 📝 Files Description
+## 👨‍🎓 Author
 
-| File | Lines | Description |
-|------|-------|-------------|
-| `data_loader.py` | ~230 | CIFAR-10 download, loading, preprocessing |
-| `feature_extraction.py` | ~220 | HOG feature extraction with PCA option |
-| `svm_classifier.py` | ~280 | SVM training, tuning, evaluation |
-| `visualization.py` | ~350 | 8 visualization functions |
-| `main.py` | ~260 | CLI interface and training pipeline |
+Bachelor's Thesis - Data Analytics
 
----
-
-## 🎓 Author
-
-**Bachelor's Thesis Project**  
-Data Analytics Program  
-2026
-
----
-
-## 📄 License
-
-This project is for educational purposes as part of a Bachelor's thesis in Data Analytics.
+**GitHub**: https://github.com/pruthvirajsinhpunada/bachelors_project

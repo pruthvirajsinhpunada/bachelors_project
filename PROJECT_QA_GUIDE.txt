@@ -1,0 +1,178 @@
+# SVM Satellite Image Classification - Project Q&A Guide
+## Bachelor's Thesis Presentation Reference
+
+---
+
+## 1. WHAT IS THIS PROJECT ABOUT?
+
+"This project applies Support Vector Machine (SVM), a supervised machine learning 
+algorithm, for satellite image classification. I used the EuroSAT dataset which 
+contains satellite images of 10 different land cover types like forests, rivers, 
+highways, and residential areas."
+
+---
+
+## 2. HOW TO PRESENT THIS PROJECT?
+
+### Presentation Structure (15-20 minutes)
+
+**1. Introduction (2 min)**
+"My project uses SVM for classifying satellite images into different land cover types."
+
+**2. Theory - SVM & Kernels (3 min)**
+Show: outputs/figures/11_kernel_theory.png
+- "SVM finds the optimal hyperplane that maximizes margin between classes"
+- "The kernel trick transforms data into higher dimensions"
+- "I tested 3 kernels: Linear, RBF, and Polynomial"
+
+**3. Live Demo (5 min)**
+Run: python3 main.py --train --evaluate --compare-kernels --subset 2000
+
+**4. Hyperplane Visualization (3 min)**
+Show: outputs/figures/10_hyperplane_decision_boundaries.png
+- "This shows how each kernel creates different decision boundaries"
+
+**5. Results (3 min)**
+| Kernel | Accuracy |
+|--------|----------|
+| RBF    | ~54%     |
+| Linear | ~45%     |
+| Poly   | ~35%     |
+
+**6. Conclusion (2 min)**
+- "RBF kernel performs best for satellite image classification"
+- "HOG features effectively capture land cover patterns"
+
+---
+
+## 3. WHAT TECHNOLOGY AND SOFTWARE DID YOU USE?
+
+### Programming Language
+- Python 3.9+
+
+### Machine Learning Libraries
+- scikit-learn: SVM classifier, GridSearchCV, metrics
+- scikit-image: HOG feature extraction
+- NumPy: Numerical computations
+- Pandas: Data manipulation
+
+### Visualization
+- Matplotlib: Plots, decision boundaries
+- Seaborn: Heatmaps
+
+### Development Tools
+- VS Code: Code editing
+- Jupyter Notebook: Interactive analysis
+- Git/GitHub: Version control
+
+### Quick Answer:
+"I used Python with scikit-learn for the SVM classifier, scikit-image for 
+HOG feature extraction, and Matplotlib for visualizations."
+
+---
+
+## 4. WHERE DID YOU GET THE DATASET?
+
+### EuroSAT (Satellite Images)
+- Source: Zenodo (European Research Repository)
+- URL: https://zenodo.org/record/7711810
+- Citation: Helber et al., 2019
+- Size: 27,000 images (64x64 pixels)
+- Classes: 10 land cover types
+
+### Land Cover Classes:
+1. AnnualCrop - Annual crop fields
+2. Forest - Forested areas
+3. HerbaceousVegetation - Herbaceous vegetation
+4. Highway - Roads and highways
+5. Industrial - Industrial areas
+6. Pasture - Pasture lands
+7. PermanentCrop - Permanent crop fields
+8. Residential - Residential areas
+9. River - Rivers and streams
+10. SeaLake - Seas and lakes
+
+---
+
+## 5. WHAT MATHEMATICAL FORMULAS ARE USED?
+
+### SVM Kernel Functions
+
+| Kernel     | Formula                           |
+|------------|-----------------------------------|
+| Linear     | K(x, y) = x · y                   |
+| RBF        | K(x, y) = exp(-γ ||x - y||²)      |
+| Polynomial | K(x, y) = (γ · x · y + r)^d       |
+
+### SVM Optimization Objective
+Minimize: (1/2) ||w||² + C Σ ξᵢ
+Subject to: yᵢ(w · xᵢ + b) ≥ 1 - ξᵢ
+
+### HOG Feature Extraction
+Gradient Magnitude: |G| = √(Gₓ² + Gᵧ²)
+Gradient Direction: θ = arctan(Gᵧ / Gₓ)
+
+### Evaluation Metrics
+| Metric     | Formula                                      |
+|------------|----------------------------------------------|
+| Accuracy   | (TP + TN) / (TP + TN + FP + FN)              |
+| Precision  | TP / (TP + FP)                               |
+| Recall     | TP / (TP + FN)                               |
+| F1-Score   | 2 × (Precision × Recall) / (Precision + Recall) |
+
+---
+
+## 6. HOW DID YOU CREATE THE GRAPHS?
+
+"The visualizations were created using Matplotlib for plotting and Seaborn 
+for styled heatmaps. The code is in src/visualization.py and 
+src/kernel_visualization.py. The hyperplane decision boundaries use PCA 
+to reduce the data to 2D so we can visualize the SVM decision regions."
+
+---
+
+## 7. KEY COMMANDS TO RUN
+
+# Standard training
+python3 main.py --train --evaluate --subset 2000
+
+# With kernel comparison (recommended for presentation)
+python3 main.py --train --evaluate --compare-kernels --subset 2000
+
+# Just kernel comparison visualization
+python3 main.py --compare-kernels-only
+
+---
+
+## 8. WHAT TO INSTALL?
+
+# Install Python dependencies
+pip3 install -r requirements.txt
+
+# Or manually:
+pip3 install numpy scikit-learn scikit-image matplotlib seaborn opencv-python pandas joblib tqdm jupyter
+
+---
+
+## 9. GITHUB REPOSITORY
+
+URL: https://github.com/pruthvirajsinhpunada/bachelors_project
+
+---
+
+## 10. GENERATED VISUALIZATIONS
+
+| File                                    | Description                    |
+|-----------------------------------------|--------------------------------|
+| 00_satellite_samples.png                | Sample satellite images        |
+| 01_sample_images.png                    | Preprocessed samples           |
+| 02_class_distribution.png               | Class balance                  |
+| 03_confusion_matrix.png                 | Classification results         |
+| 04_roc_curves.png                       | Per-class ROC                  |
+| 09_kernel_comparison.png                | Kernel comparison              |
+| 10_hyperplane_decision_boundaries.png   | Hyperplane visualization       |
+| 11_kernel_theory.png                    | SVM theory                     |
+
+---
+
+Good luck with your presentation! 🎓

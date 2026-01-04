@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-SVM Object Recognition - Enhanced Main Entry Point
-===================================================
-Bachelor's Thesis: SVM for Object Recognition
+SVM Satellite Image Classification
+===================================
+Bachelor's Thesis: Land Cover Classification using SVM
+
+This project applies Support Vector Machine (SVM) for satellite image 
+classification using the EuroSAT dataset with 10 land cover classes.
 
 Features:
-- CIFAR-10 object classification
-- Satellite image classification (EuroSAT)
+- EuroSAT satellite image classification
 - SVM kernel comparison (Linear, RBF, Polynomial)
 - Hyperplane/decision boundary visualization
 - HOG feature extraction
@@ -14,9 +16,8 @@ Features:
 
 Usage:
     python main.py --train --evaluate
-    python main.py --satellite --train --evaluate
-    python main.py --compare-kernels
-    python main.py --visualize-hyperplane
+    python main.py --train --evaluate --compare-kernels
+    python main.py --compare-kernels-only
 """
 
 import argparse
@@ -28,7 +29,8 @@ from datetime import datetime
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from data_loader import load_cifar10, preprocess_images, CLASS_NAMES
+from satellite_loader import load_satellite_dataset, plot_satellite_samples, SATELLITE_CLASS_NAMES
+from data_loader import preprocess_images
 from feature_extraction import HOGFeatureExtractor, visualize_hog_features
 from svm_classifier import SVMClassifier
 from visualization import (
@@ -40,21 +42,16 @@ from visualization import (
 )
 
 
-def print_banner(mode='cifar10'):
+def print_banner():
     """Print project banner."""
-    if mode == 'satellite':
-        dataset_info = "Dataset: EuroSAT Satellite Images (10 Land Cover Classes)"
-    else:
-        dataset_info = "Dataset: CIFAR-10 (10 Object Classes)"
-    
-    banner = f"""
+    banner = """
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                                                                      ║
-║         🎓 SVM OBJECT RECOGNITION PROJECT                            ║
+║      🛰️  SVM SATELLITE IMAGE CLASSIFICATION                          ║
 ║         Bachelor's Thesis - Data Analytics                           ║
 ║                                                                      ║
-║         Using Support Vector Machine for Image Classification        ║
-║         {dataset_info:<55}║
+║         Using Support Vector Machine for Land Cover Classification   ║
+║         Dataset: EuroSAT (10 Land Cover Classes)                     ║
 ║                                                                      ║
 ║         Features: Kernel Comparison | Hyperplane Visualization       ║
 ║                                                                      ║
@@ -101,46 +98,35 @@ def run_kernel_comparison(X_train, y_train, X_test, y_test, class_names, output_
 
 def train_pipeline(args):
     """
-    Complete training pipeline.
+    Complete training pipeline for satellite image classification.
     """
-    # Determine dataset type
-    if args.satellite:
-        from satellite_loader import load_satellite_dataset, plot_satellite_samples, SATELLITE_CLASS_NAMES
-        print_banner('satellite')
-        
-        print("\n" + "=" * 60)
-        print("STEP 1: Loading Satellite Dataset")
-        print("=" * 60)
-        
-        data = load_satellite_dataset(
-            data_dir='data',
-            subset_size=args.subset_size
-        )
-        current_class_names = data['class_names']
-        
-        # Save satellite samples visualization
-        plot_satellite_samples(
-            data['X_train'], data['y_train'], current_class_names,
-            save_path='outputs/figures/00_satellite_samples.png'
-        )
-    else:
-        print_banner('cifar10')
-        
-        print("\n" + "=" * 60)
-        print("STEP 1: Loading CIFAR-10 Dataset")
-        print("=" * 60)
-        
-        data = load_cifar10(
-            data_dir='data',
-            subset_size=args.subset_size
-        )
-        current_class_names = CLASS_NAMES
+    print_banner()
+    
+    # ========================================
+    # Step 1: Load Satellite Dataset
+    # ========================================
+    print("\n" + "=" * 60)
+    print("STEP 1: Loading EuroSAT Satellite Dataset")
+    print("=" * 60)
+    
+    data = load_satellite_dataset(
+        data_dir='data',
+        subset_size=args.subset_size
+    )
+    class_names = data['class_names']
+    
+    # Save satellite samples visualization
+    os.makedirs('outputs/figures', exist_ok=True)
+    plot_satellite_samples(
+        data['X_train'], data['y_train'], class_names,
+        save_path='outputs/figures/00_satellite_samples.png'
+    )
     
     # ========================================
     # Step 2: Preprocess Images
     # ========================================
     print("\n" + "=" * 60)
-    print("STEP 2: Preprocessing Images")
+    print("STEP 2: Preprocessing Satellite Images")
     print("=" * 60)
     
     X_train_processed = preprocess_images(data['X_train'], grayscale=True, normalize=True)
@@ -156,9 +142,9 @@ def train_pipeline(args):
     print("STEP 3: Extracting HOG Features")
     print("=" * 60)
     
-    # Adjust for image size
+    # Adjust for satellite image size (64x64)
     img_size = X_train_processed.shape[1]
-    ppc = (4, 4) if img_size <= 32 else (8, 8)
+    ppc = (8, 8) if img_size >= 64 else (4, 4)
     
     extractor = HOGFeatureExtractor(
         orientations=9,
@@ -188,7 +174,7 @@ def train_pipeline(args):
         kernel_results = run_kernel_comparison(
             X_train_features, data['y_train'],
             X_test_features, data['y_test'],
-            current_class_names,
+            class_names,
             output_dir='outputs/figures'
         )
     
@@ -228,7 +214,7 @@ def train_pipeline(args):
         results = classifier.evaluate(
             X_test_features,
             data['y_test'],
-            class_names=current_class_names
+            class_names=class_names
         )
         
         # ========================================
@@ -238,8 +224,7 @@ def train_pipeline(args):
         print("STEP 7: Generating Visualizations")
         print("=" * 60)
         
-        # Update data dict for visualization
-        data['class_names'] = current_class_names
+        data['class_names'] = class_names
         generate_all_visualizations(data, results, output_dir='outputs/figures')
         
         # Generate HOG visualization sample
@@ -250,20 +235,18 @@ def train_pipeline(args):
         plot_hog_visualization(
             data['X_train'][sample_idx],
             hog_image,
-            class_name=current_class_names[data['y_train'][sample_idx]],
+            class_name=class_names[data['y_train'][sample_idx]],
             save_path='outputs/figures/08_hog_visualization.png'
         )
         
         # ========================================
         # Summary
         # ========================================
-        dataset_name = "Satellite (EuroSAT)" if args.satellite else "CIFAR-10"
-        
         print("\n" + "=" * 70)
         print("🎉 TRAINING COMPLETE - SUMMARY")
         print("=" * 70)
-        print(f"\n📊 Dataset: {dataset_name}")
-        print(f"   Classes: {len(current_class_names)}")
+        print(f"\n📊 Dataset: EuroSAT Satellite Images")
+        print(f"   Land Cover Classes: {len(class_names)}")
         print(f"\n📈 Results:")
         print(f"   Accuracy:  {results['accuracy']*100:.2f}%")
         print(f"   Precision: {results['precision']*100:.2f}%")
@@ -290,8 +273,8 @@ def train_pipeline(args):
     return None
 
 
-def run_standalone_visualizations(args):
-    """Run standalone visualization commands."""
+def run_standalone_kernel_comparison(args):
+    """Run standalone kernel comparison visualization."""
     from kernel_visualization import (
         visualize_all_kernel_boundaries, 
         plot_kernel_theory,
@@ -299,73 +282,46 @@ def run_standalone_visualizations(args):
         plot_kernel_comparison
     )
     
-    if args.visualize_hyperplane:
-        print_banner()
-        
-        print("\nGenerating Hyperplane Visualization...")
-        print("Loading dataset and training models...")
-        
-        # Load a small dataset for visualization
-        data = load_cifar10(data_dir='data', subset_size=args.subset_size or 2000)
-        
-        X_processed = preprocess_images(data['X_train'], grayscale=True, normalize=True)
-        
-        extractor = HOGFeatureExtractor(orientations=9, pixels_per_cell=(4, 4), cells_per_block=(2, 2))
-        X_features = extractor.fit_transform(X_processed, apply_pca=False)
-        
-        os.makedirs('outputs/figures', exist_ok=True)
-        
-        # Generate all kernel boundaries
-        visualize_all_kernel_boundaries(
-            X_features, data['y_train'], CLASS_NAMES,
-            save_path='outputs/figures/10_hyperplane_decision_boundaries.png'
-        )
-        
-        # Generate theory plot
-        plot_kernel_theory(save_path='outputs/figures/11_kernel_theory.png')
-        
-        print("\n✓ Hyperplane visualizations saved to outputs/figures/")
-        return
+    print_banner()
     
-    if args.compare_kernels_only:
-        print_banner()
-        
-        print("\nRunning Kernel Comparison...")
-        
-        # Load dataset
-        data = load_cifar10(data_dir='data', subset_size=args.subset_size or 3000)
-        
-        X_train_processed = preprocess_images(data['X_train'], grayscale=True, normalize=True)
-        X_test_processed = preprocess_images(data['X_test'], grayscale=True, normalize=True)
-        
-        extractor = HOGFeatureExtractor(orientations=9, pixels_per_cell=(4, 4), cells_per_block=(2, 2))
-        X_train_features = extractor.fit_transform(X_train_processed)
-        X_test_features = extractor.transform(X_test_processed)
-        
-        os.makedirs('outputs/figures', exist_ok=True)
-        
-        # Compare kernels
-        results = compare_kernels(
-            X_train_features, data['y_train'],
-            X_test_features, data['y_test'],
-            CLASS_NAMES
-        )
-        
-        # Plot comparison
-        plot_kernel_comparison(results, save_path='outputs/figures/09_kernel_comparison.png')
-        
-        # Generate hyperplane viz
-        visualize_all_kernel_boundaries(
-            X_train_features, data['y_train'], CLASS_NAMES,
-            save_path='outputs/figures/10_hyperplane_decision_boundaries.png'
-        )
-        
-        print("\n✓ Kernel comparison saved to outputs/figures/")
-        return
+    print("\nRunning Kernel Comparison on Satellite Data...")
+    
+    # Load dataset
+    data = load_satellite_dataset(data_dir='data', subset_size=args.subset_size or 2000)
+    
+    X_train_processed = preprocess_images(data['X_train'], grayscale=True, normalize=True)
+    X_test_processed = preprocess_images(data['X_test'], grayscale=True, normalize=True)
+    
+    extractor = HOGFeatureExtractor(orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
+    X_train_features = extractor.fit_transform(X_train_processed)
+    X_test_features = extractor.transform(X_test_processed)
+    
+    os.makedirs('outputs/figures', exist_ok=True)
+    
+    # Compare kernels
+    results = compare_kernels(
+        X_train_features, data['y_train'],
+        X_test_features, data['y_test'],
+        data['class_names']
+    )
+    
+    # Plot comparison
+    plot_kernel_comparison(results, save_path='outputs/figures/09_kernel_comparison.png')
+    
+    # Generate hyperplane viz
+    visualize_all_kernel_boundaries(
+        X_train_features, data['y_train'], data['class_names'],
+        save_path='outputs/figures/10_hyperplane_decision_boundaries.png'
+    )
+    
+    # Generate theory plot
+    plot_kernel_theory(save_path='outputs/figures/11_kernel_theory.png')
+    
+    print("\n✓ Kernel comparison visualizations saved to outputs/figures/")
 
 
 def predict_image(image_path, show_result=True):
-    """Predict the class of a single image."""
+    """Predict the land cover class of a satellite image."""
     import cv2
     
     classifier = SVMClassifier.load('outputs/models/svm_classifier.joblib')
@@ -375,7 +331,7 @@ def predict_image(image_path, show_result=True):
     if image is None:
         raise ValueError(f"Could not load image: {image_path}")
     
-    image = cv2.resize(image, (32, 32))
+    image = cv2.resize(image, (64, 64))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_gray = np.dot(image[..., :3], [0.299, 0.587, 0.114]) / 255.0
     
@@ -384,16 +340,17 @@ def predict_image(image_path, show_result=True):
     prediction = classifier.predict(features)[0]
     probabilities = classifier.predict_proba(features)[0]
     
-    predicted_class = CLASS_NAMES[prediction]
+    predicted_class = SATELLITE_CLASS_NAMES[prediction]
     
     if show_result:
-        print(f"\n🔮 Prediction for: {image_path}")
-        print(f"   Predicted class: {predicted_class}")
+        print(f"\n�️ Satellite Image Prediction")
+        print(f"   Image: {image_path}")
+        print(f"   Predicted Land Cover: {predicted_class}")
         print(f"   Confidence: {probabilities[prediction]*100:.2f}%")
         print(f"\n   All probabilities:")
-        for i, (name, prob) in enumerate(zip(CLASS_NAMES, probabilities)):
+        for i, (name, prob) in enumerate(zip(SATELLITE_CLASS_NAMES, probabilities)):
             bar = '█' * int(prob * 20)
-            print(f"      {name:12s}: {bar:20s} {prob*100:5.2f}%")
+            print(f"      {name:22s}: {bar:20s} {prob*100:5.2f}%")
     
     return predicted_class, probabilities
 
@@ -401,30 +358,26 @@ def predict_image(image_path, show_result=True):
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description='SVM Object Recognition - Bachelor\'s Thesis Project',
+        description='SVM Satellite Image Classification - Bachelor\'s Thesis',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    # Standard training with CIFAR-10
-    python main.py --train --evaluate --subset 5000
+    # Standard training
+    python main.py --train --evaluate --subset 2000
     
-    # Training with satellite images
-    python main.py --satellite --train --evaluate --subset 1000
+    # Training with kernel comparison (recommended)
+    python main.py --train --evaluate --compare-kernels --subset 2000
     
-    # Full training with kernel comparison
-    python main.py --train --evaluate --compare-kernels --subset 3000
+    # With hyperparameter tuning
+    python main.py --train --tune --evaluate --subset 1000
     
-    # Generate hyperplane visualization only
-    python main.py --visualize-hyperplane
-    
-    # Compare all kernels
+    # Just kernel comparison visualization
     python main.py --compare-kernels-only
+    
+    # Predict land cover for an image
+    python main.py --predict path/to/satellite_image.jpg
         """
     )
-    
-    # Dataset options
-    parser.add_argument('--satellite', action='store_true',
-                        help='Use satellite imagery (EuroSAT) instead of CIFAR-10')
     
     # Training options
     parser.add_argument('--train', action='store_true',
@@ -437,8 +390,6 @@ Examples:
                         help='Compare Linear, RBF, and Polynomial kernels')
     
     # Standalone visualization options
-    parser.add_argument('--visualize-hyperplane', action='store_true',
-                        help='Generate hyperplane/decision boundary visualizations')
     parser.add_argument('--compare-kernels-only', action='store_true',
                         help='Only run kernel comparison without full training')
     
@@ -463,15 +414,15 @@ Examples:
     
     # Prediction
     parser.add_argument('--predict', type=str, metavar='IMAGE_PATH',
-                        help='Predict class for a single image')
+                        help='Predict land cover class for a satellite image')
     
     args = parser.parse_args()
     
     # Execute based on arguments
     if args.predict:
         predict_image(args.predict)
-    elif args.visualize_hyperplane or args.compare_kernels_only:
-        run_standalone_visualizations(args)
+    elif args.compare_kernels_only:
+        run_standalone_kernel_comparison(args)
     elif args.train:
         train_pipeline(args)
     else:
@@ -480,11 +431,9 @@ Examples:
         print("💡 QUICK START COMMANDS:")
         print("=" * 60)
         print("\n  Standard training:")
-        print("    python main.py --train --evaluate --subset 5000")
-        print("\n  With kernel comparison (recommended for thesis):")
-        print("    python main.py --train --evaluate --compare-kernels --subset 3000")
-        print("\n  Satellite imagery:")
-        print("    python main.py --satellite --train --evaluate --subset 1000")
+        print("    python main.py --train --evaluate --subset 2000")
+        print("\n  With kernel comparison (recommended):")
+        print("    python main.py --train --evaluate --compare-kernels --subset 2000")
         print("\n  Just visualizations:")
         print("    python main.py --compare-kernels-only")
         print()
