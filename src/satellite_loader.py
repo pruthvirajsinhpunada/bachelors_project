@@ -26,6 +26,36 @@ SATELLITE_CLASS_NAMES = [
 ]
 
 
+def preprocess_images(images, grayscale=True, normalize=True):
+    """
+    Preprocess images for feature extraction.
+    
+    Parameters:
+    -----------
+    images : np.ndarray
+        Array of images (N, H, W, C)
+    grayscale : bool
+        Convert to grayscale if True
+    normalize : bool
+        Normalize pixel values to [0, 1]
+        
+    Returns:
+    --------
+    np.ndarray : Preprocessed images
+    """
+    processed = images.copy().astype(np.float32)
+    
+    if normalize:
+        processed = processed / 255.0
+    
+    if grayscale:
+        # Convert to grayscale using luminosity method
+        # Y = 0.299*R + 0.587*G + 0.114*B
+        processed = np.dot(processed[..., :3], [0.299, 0.587, 0.114])
+    
+    return processed
+
+
 def download_eurosat(data_dir='data'):
     """
     Download EuroSAT satellite image dataset.

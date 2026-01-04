@@ -29,8 +29,7 @@ from datetime import datetime
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from satellite_loader import load_satellite_dataset, plot_satellite_samples, SATELLITE_CLASS_NAMES
-from data_loader import preprocess_images
+from satellite_loader import load_satellite_dataset, plot_satellite_samples, SATELLITE_CLASS_NAMES, preprocess_images
 from feature_extraction import HOGFeatureExtractor, visualize_hog_features
 from svm_classifier import SVMClassifier
 from visualization import (
