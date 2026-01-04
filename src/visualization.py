@@ -49,7 +49,7 @@ def plot_sample_images(images, labels, class_names, n_samples=25, save_path=None
     n_rows = (n_samples + n_cols - 1) // n_cols
     
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(12, 2.5 * n_rows))
-    fig.suptitle('CIFAR-10 Sample Images', fontsize=16, fontweight='bold', y=1.02)
+    fig.suptitle('EuroSAT Satellite Sample Images', fontsize=16, fontweight='bold', y=1.02)
     
     # Select random samples
     indices = np.random.choice(len(images), n_samples, replace=False)
