@@ -170,4 +170,4 @@ You can explore the complete analysis, theory, and live code in the interactive 
 3. **IMPORTANT**: If the plots don't show, run the **"Setup & Imports"** cell at the top first!
 
 ### Online Preview:
-You can also view the notebook directly on GitHub or via [nbviewer](https://nbviewer.org/).
+You can also view the notebook directly on GitHub or via [View Final Notebook on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb?flush_cache=true).
