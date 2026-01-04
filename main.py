@@ -128,8 +128,8 @@ def train_pipeline(args):
     print("STEP 2: Preprocessing Satellite Images")
     print("=" * 60)
     
-    X_train_processed = preprocess_images(data['X_train'], grayscale=True, normalize=True)
-    X_test_processed = preprocess_images(data['X_test'], grayscale=True, normalize=True)
+    X_train_processed = preprocess_images(data['X_train'], grayscale=False, normalize=True)
+    X_test_processed = preprocess_images(data['X_test'], grayscale=False, normalize=True)
     
     print(f"✓ Preprocessed training images: {X_train_processed.shape}")
     print(f"✓ Preprocessed test images: {X_test_processed.shape}")
@@ -288,8 +288,8 @@ def run_standalone_kernel_comparison(args):
     # Load dataset
     data = load_satellite_dataset(data_dir='data', subset_size=args.subset_size or 2000)
     
-    X_train_processed = preprocess_images(data['X_train'], grayscale=True, normalize=True)
-    X_test_processed = preprocess_images(data['X_test'], grayscale=True, normalize=True)
+    X_train_processed = preprocess_images(data['X_train'], grayscale=False, normalize=True)
+    X_test_processed = preprocess_images(data['X_test'], grayscale=False, normalize=True)
     
     extractor = HOGFeatureExtractor(orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
     X_train_features = extractor.fit_transform(X_train_processed)
@@ -332,9 +332,9 @@ def predict_image(image_path, show_result=True):
     
     image = cv2.resize(image, (64, 64))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image_gray = np.dot(image[..., :3], [0.299, 0.587, 0.114]) / 255.0
+    image_rgb = image / 255.0
     
-    features = extractor.transform(np.array([image_gray]), show_progress=False)
+    features = extractor.transform(np.array([image_rgb]), show_progress=False)
     
     prediction = classifier.predict(features)[0]
     probabilities = classifier.predict_proba(features)[0]
