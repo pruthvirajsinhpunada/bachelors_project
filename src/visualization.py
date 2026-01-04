@@ -102,9 +102,10 @@ def plot_class_distribution(labels, class_names, save_path=None):
     colors = plt.cm.viridis(np.linspace(0.2, 0.8, len(unique)))
     bars = ax.bar([class_names[i] for i in unique], counts, color=colors, edgecolor='white', linewidth=1.5)
     
-    # Add value labels on bars
+    # Add value labels on bars (dynamic offset based on data)
+    offset = max(counts) * 0.02  # 2% of max height
     for bar, count in zip(bars, counts):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 50,
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + offset,
                 f'{count}', ha='center', va='bottom', fontsize=10, fontweight='bold')
     
     ax.set_xlabel('Object Class', fontsize=12)
