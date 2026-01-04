@@ -121,20 +121,22 @@ def plot_kernel_comparison(results, save_path=None):
     # 2. Training time comparison
     times = [results[k]['training_time'] for k in kernels]
     bars = axes[1].bar([k.upper() for k in kernels], times, color=colors, edgecolor='white', linewidth=2)
+    time_offset = max(times) * 0.05  # Dynamic offset
     for bar, t in zip(bars, times):
-        axes[1].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1,
+        axes[1].text(bar.get_x() + bar.get_width()/2, bar.get_height() + time_offset,
                     f'{t:.2f}s', ha='center', va='bottom', fontsize=12, fontweight='bold')
     axes[1].set_ylabel('Time (seconds)', fontsize=12)
-    axes[1].set_title('Training Time', fontsize=14, fontweight='bold')
+    axes[1].set_title('Training Time', fontsize=14, fontweight='bold', pad=15)
     
     # 3. Support vectors comparison
     svs = [results[k]['n_support_vectors'] for k in kernels]
     bars = axes[2].bar([k.upper() for k in kernels], svs, color=colors, edgecolor='white', linewidth=2)
+    sv_offset = max(svs) * 0.02  # Dynamic offset
     for bar, sv in zip(bars, svs):
-        axes[2].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 10,
+        axes[2].text(bar.get_x() + bar.get_width()/2, bar.get_height() + sv_offset,
                     f'{sv}', ha='center', va='bottom', fontsize=12, fontweight='bold')
     axes[2].set_ylabel('Count', fontsize=12)
-    axes[2].set_title('Number of Support Vectors', fontsize=14, fontweight='bold')
+    axes[2].set_title('Number of Support Vectors', fontsize=14, fontweight='bold', pad=15)
     
     plt.suptitle('SVM Kernel Comparison', fontsize=16, fontweight='bold', y=1.02)
     plt.tight_layout()
