@@ -172,6 +172,6 @@ You can explore the complete analysis, theory, and live code in the interactive 
 ### Online Preview:
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition.ipynb)
 
-- **Interactive Jupyter Notebook**: [Launch on Binder](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition.ipynb)
-- **Google Colab (Recommended)**: [Open in Colab](https://colab.research.google.com/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb) (Reliable dynamic rendering)
-- **Static Preview**: [View on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb?flush_cache=true) or download the [HTML Report](notebooks/SVM_Object_Recognition.html) for local viewing.
+- **Interactive Jupyter Notebook**: [Launch on Binder](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition_Fixed.ipynb)
+- **Google Colab (Recommended)**: [Open in Colab](https://colab.research.google.com/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition_Fixed.ipynb)
+- **Static Preview**: [View on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition_Fixed.ipynb) (Fixed Version)
