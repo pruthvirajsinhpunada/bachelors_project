@@ -170,8 +170,7 @@ You can explore the complete analysis, theory, and live code in the interactive 
 3. **IMPORTANT**: If the plots don't show, run the **"Setup & Imports"** cell at the top first!
 
 ### Online Preview:
-### Online Preview:
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition.ipynb)
 
 - **Interactive Jupyter Notebook**: [Launch on Binder](https://mybinder.org/v2/gh/pruthvirajsinhpunada/bachelors_project/main?labpath=notebooks%2FSVM_Object_Recognition.ipynb)
-- **Static Preview with Outputs**: [View on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb)
+- **Static Preview with Outputs**: [View on nbviewer](https://nbviewer.org/github/pruthvirajsinhpunada/bachelors_project/blob/main/notebooks/SVM_Object_Recognition.ipynb?flush_cache=true)
