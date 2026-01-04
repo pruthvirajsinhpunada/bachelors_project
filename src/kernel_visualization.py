@@ -145,8 +145,8 @@ def plot_kernel_comparison(results, save_path=None):
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         plt.savefig(save_path, dpi=150, bbox_inches='tight', facecolor='white')
         print(f"✓ Saved: {save_path}")
+        plt.close()
     
-    plt.close()
     return fig
 
 
@@ -457,8 +457,8 @@ def plot_kernel_theory(save_path=None):
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         plt.savefig(save_path, dpi=150, bbox_inches='tight', facecolor='white')
         print(f"✓ Saved: {save_path}")
+        plt.close()
     
-    plt.close()
     return fig
 
 

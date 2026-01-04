@@ -146,8 +146,28 @@ Support Vector Machine with kernel functions:
 
 ---
 
+---
+
 ## 👨‍🎓 Author
 
+**Punada Pruthvirajsinh**  
 Bachelor's Thesis - Data Analytics
 
 **GitHub**: https://github.com/pruthvirajsinhpunada/bachelors_project
+
+---
+
+## 📓 Interactive Notebook
+
+You can explore the complete analysis, theory, and live code in the interactive Jupyter Notebook.
+
+### How to Run Locally:
+1. Start Jupyter:
+   ```bash
+   jupyter notebook
+   ```
+2. Open `notebooks/SVM_Object_Recognition.ipynb`
+3. **IMPORTANT**: If the plots don't show, run the **"Setup & Imports"** cell at the top first!
+
+### Online Preview:
+You can also view the notebook directly on GitHub or via [nbviewer](https://nbviewer.org/).
