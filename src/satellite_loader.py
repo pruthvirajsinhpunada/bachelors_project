@@ -107,6 +107,9 @@ def download_eurosat(data_dir='data'):
         os.remove(zip_path)
         print("✓ Extraction complete!")
         
+        if os.path.exists(os.path.join(data_dir, 'EuroSAT_RGB')):
+            return os.path.join(data_dir, 'EuroSAT_RGB')
+        
         return eurosat_dir
         
     except Exception as e:
